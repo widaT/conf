@@ -66,7 +66,6 @@ func (c *config) initConfig(path string) {
 		if index < 0 {
 			continue
 		}
-
 		frist := strings.TrimSpace(s[:index])
 		if len(frist) == 0 {
 			continue
@@ -77,33 +76,28 @@ func (c *config) initConfig(path string) {
 		if pos > -1 {
 			second = second[0:pos]
 		}
-
 		pos = strings.Index(second, " #")
 		if pos > -1 {
 			second = second[0:pos]
 		}
-
 		pos = strings.Index(second, "\t//")
 		if pos > -1 {
 			second = second[0:pos]
 		}
-
 		pos = strings.Index(second, " //")
 		if pos > -1 {
 			second = second[0:pos]
 		}
-
 		if len(second) == 0 {
 			continue
 		}
-
 		key := c.strcet + middle + frist
 		c.mymap[key] = strings.TrimSpace(second)
 	}
 }
 
-func (c config) Read(node, key string) string {
-	key = node + middle + key
+func (c config) Read(section, key string) string {
+	key = section + middle + key
 	v, found := c.mymap[key]
 	if !found {
 		return ""
@@ -111,7 +105,35 @@ func (c config) Read(node, key string) string {
 	return v
 }
 
-func (c config)GetInt(node, key string) int {
-	 i,_ := strconv.Atoi(c.Read(node, key ))
-	 return i
+func (c config)GetInt(section, key string) int {
+	 value,_ := strconv.Atoi(c.Read(section, key ))
+	 return value
+}
+
+func (c config)GetInt64(section,key string) int64 {
+    value,_ := strconv.ParseInt(c.Read(section, key),10,64)
+    return value
+}
+
+func (c config)GetBool(section ,key string) bool {
+    value,_ := strconv.ParseBool(c.Read(section, key ))
+    return value
+}
+
+
+func (c config)GetFloat64(section ,key string ) float64 {
+    value,_ := strconv.ParseFloat(c.Read(section, key ),64)
+    return value
+}
+
+func (c config) GetArray(section, key, delim string) []string {
+    value := c.Read(section, key)
+    if value == "" {
+        return []string{}
+    }
+    values := strings.Split(value, delim)
+    for i := range values {
+        values[i] = strings.TrimSpace(values[i])
+    }
+    return values
 }
