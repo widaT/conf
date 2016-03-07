@@ -105,6 +105,16 @@ func (c config) Read(section, key string) string {
 	return v
 }
 
+func (c config) GetMap(section string) map[string]string{
+	tmap := make(map[string]string , 10)
+	for k,v:= range c.mymap {
+		if strings.HasPrefix(k,section+middle){
+			tmap[strings.TrimPrefix(k,section+middle)] = v
+		}
+	}
+	return tmap
+}
+
 func (c config)GetInt(section, key string) int {
 	 value,_ := strconv.Atoi(c.Read(section, key ))
 	 return value
